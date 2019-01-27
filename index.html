@@ -1,0 +1,669 @@
+<html class="" lang="de">
+<head>
+   <!--
+   <script src="https://www.gstatic.com/firebasejs/5.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.0/firebase-messaging.js"></script>
+
+    -->
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Major+Mono+Display|Oswald" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="images/icon2.png">
+
+
+    <link rel="stylesheet"
+          href="waschmaschine.css">
+
+</head>
+
+<body>
+
+<div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+    <header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
+        <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">Deine Washifies</span>
+            <div class="mdl-layout-spacer"></div>
+        </div>
+    </header>
+    <div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+        <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
+            <div id="to-home" class="mdl-navigation__link"><i class="mdl-color-text--blue-grey-400 material-icons"
+                                                              role="presentation">home</i>Deine Washifies
+            </div>
+            <div class="mdl-layout-spacer"></div>
+            <img style="margin-bottom: 20px; width: 100px" src="images/icon2.png">
+        </nav>
+    </div>
+    <main class="mdl-layout__content mdl-color--grey-100">
+        <div id="page_machine" class="page">
+            <div class="mdl-grid demo-content">
+                <div style="display: none" id="ab123"
+                     class="demo-machine mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+                    <div class="mdl-cell mdl-cell--12-col" style="margin-bottom: 10px; margin-top: 10px; width: 100%">
+                        <div style="float: left" class="name"></div>
+                        <div class="pointer settings-button" style="float: right;><i
+                                class="material-icons"
+                                role="presentation">settings</i>
+                        </div>
+                        <div id="js-push-btn" class="pointer" style="float: right; margin-right: 10px; color: #d2d2d2">
+                            <i class="material-icons"
+                               role="presentation">notification_important</i>
+                        </div>
+                    </div>
+                    <div class="mdl-cell mdl-cell--12-col" style="margin-bottom: 10px; width: 100%">
+                        <div style="display:none" id="running" class="heading">Waschmaschine läuft zurzeit</div>
+                        <div id="connecting" class="heading">dein Washify wird gesucht...</div>
+                        <div style="display:none" id="finished" class="heading">Waschmaschine ist fertig</div>
+                        <div style="display:none" id="no-connection" class="heading">die verbindung zu deinem Washify
+                            wurde getrennt
+                        </div>
+                        <div style="display:none" id="calibrate" class="heading">Washify kalibriert</div>
+                    </div>
+                    <div style="height: 250px" class="mdl-cell mdl-cell--12-col">
+                        <div class='machine'>
+                            <div class='above'></div>
+                            <div class='canvas'>
+                                <div class='header'>
+                                    <div class='programmer'></div>
+                                    <div class='led'></div>
+                                    <div class='buttons'>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <div class='seperator'>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                </div>
+                                <div class='flare'>
+                                    <span>
+                                        <p></p>
+                                    </span>
+                                    <span>
+                                        <p></p>
+                                    </span>
+                                </div>
+                                <div class='body rotateWater'>
+                                    <div class='water'>
+                                        <div class='shark'></div>
+                                    </div>
+                                </div>
+                                <div class='footer'>
+                                    <div class='edge'></div>
+                                    <div class='fix'></div>
+                                </div>
+                            </div>
+                            <div class='base'></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none" id="page_add_machine" class="page">
+            <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--12-col">
+                    <h4>Washify Gerätenummer eingeben:</h4>
+                    <h6>Gib hier die Gerätenummer des Washifys ein. Dieser befindet sich auf der Rückseite des
+                        Geräts.</h6>
+                </div>
+                <div class="mdl-cell mdl-cell--12-col">
+                    <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <input class="mdl-textfield__input codepin" type="text" id="code-input">
+                            <label id="code-label" class="mdl-textfield__label pincode-label"
+                                   for="code-input">Nummer...</label>
+                        </div>
+                        <span class="mdl-textfield__error">Gerät nicht gefunden!</span>
+                    </form>
+                </div>
+                <div class="mdl-cell mdl-cell--12-col">
+                    <button id="add-machine-button"
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                        Hinzufügen
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div style="display: none" id="page_settings_unauthorized" class="page">
+            <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--12-col">
+                    <h6>Du hast keine Berechtigung die Einstellungen des Gerätes zu verändern. Um auf die Eintellungen
+                        zugreifen zu können, gib bitte den PIN des Gerätes ein, welcher sich auf der
+                        Geräteverpackung befindet:</h6>
+                    <h4>PIN eingeben:</h4>
+                </div>
+                <div class="mdl-cell mdl-cell--12-col">
+                    <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <input class="mdl-textfield__input codepin" type="text" id="fake-pin">
+                            <label id="fake-pin-label" class="mdl-textfield__label pincode-label"
+                                   for="fake-pin">PIN...</label>
+                        </div>
+                        <span class="mdl-textfield__error">PIN ist leider falsch.</span>
+                    </form>
+                </div>
+                <div class="mdl-cell mdl-cell--12-col">
+                    <button id="fake-pin-button"
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                        Bestätigen
+                    </button>
+                </div>
+                <div class="mdl-cell mdl-cell--12-col">
+                    <h5>Diesen Washify aus der App entfernen!:</h5>
+                    <button class="loeschen mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                        Gerät löschen!
+                    </button>
+                    <button style="display: none"
+                            class="wirklich-loeschen mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                        Wirklich löschen?
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div style="display: none" id="page_settings" class="page">
+            <div class="mdl-grid">
+
+                
+
+                <div id="settings-authorized">
+                    <div class="mdl-cell mdl-cell--12-col">
+                        <h5>Gerätename:</h5>
+                        <form action="#">
+                            <div class="mdl-textfield mdl-js-textfield">
+                                <input class="mdl-textfield__input" type="text" id="device-name">
+                                <label class="mdl-textfield__label" for="device-name">Gerätename...</label>
+                            </div>
+                        </form>
+                        <button style="display: none" id="name-speichern"
+                                class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">
+                            Name Speichern
+                        </button>
+                    </div>
+
+                    <div class="mdl-cell mdl-cell--12-col">
+                        <h5>LED aus-/anschalten:</h5>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="led">
+                            <input type="checkbox" id="led" class="mdl-switch__input" checked>
+                            <span class="mdl-switch__label"></span>
+                        </label>
+                    </div>
+                    <div class="mdl-cell mdl-cell--12-col">
+                        <h5>Washify neu kalibrieren:</h5>
+                        <h6>Bitte achte darauf, dass sich während der Kalibrierung die Trommel dreht!</h6>
+                        <button id="kalibrieren"
+                                class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">
+                            Kalibrieren
+                        </button>
+                    </div>
+                    <div class="mdl-cell mdl-cell--12-col">
+                        <h5>Washify aus der App entfernen:</h5>
+                        <button class="loeschen mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                            Gerät löschen!
+                        </button>
+                        <button style="display: none"
+                                class="wirklich-loeschen mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                            Wirklich löschen?
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none" id="page_one" class="page">
+            <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--12-col">
+                    <h4>Bitte befestige deinen Washify an der Waschmaschine und schalte die Waschmaschine ein.
+                        Achte darauf, dass sich die Trommel dreht bevor du unten auf kalibrieren drückst.</h4>
+                </div>
+                <div class="mdl-cell mdl-cell--12-col">
+                    <button id="to-page-two"
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                        Jetzt Kalibrieren
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div style="display: none" id="page_two" class="page">
+            <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--12-col">
+                    <h3 style="text-align: center" class="">Gerät kalibriert...</h3>
+                </div>
+            </div>
+        </div>
+        <div style="display: none" id="page_three" class="page">
+            <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--12-col">
+                    <h3 style="text-align: center" class="">Gerät wurde kalibriert!</h3>
+                </div>
+            </div>
+            <div class="mdl-cell mdl-cell--12-col">
+                <button id="to-home2"
+                        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                    Fertig
+                </button>
+            </div>
+        </div>
+    </main>
+</div>
+
+
+<!-- <script src="https://www.gstatic.com/firebasejs/5.8.0/firebase.js"></script>
+<script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyBCchFcHgltzds31Yme_AO2_unuOw2Ul3A",
+        authDomain: "washify-be361.firebaseapp.com",
+        databaseURL: "https://washify-be361.firebaseio.com",
+        projectId: "washify-be361",
+        storageBucket: "washify-be361.appspot.com",
+        messagingSenderId: "819373508588"
+    };
+    firebase.initializeApp(config);
+</script>
+-->
+
+<script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+
+</body>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="push.js"></script>
+
+<script>
+
+  /*  if ('serviceWorker' in navigator) {
+        console.log('Service Worker and Push is supported');
+
+        navigator.serviceWorker.register('sw.js')
+            .then(function (swReg) {
+                console.log('Service Worker is registered', swReg);
+
+
+            })
+            .catch(function (error) {
+                console.error('Service Worker Error', error);
+            });
+    } else {
+        console.warn('Push messaging is not supported');
+        pushButton.textContent = 'Push Not Supported';
+
+    }*/
+
+    let calibrate = 0;
+    let devices = [];
+    let deviceName = "";
+    let inDeviceSettings = "";
+
+
+    let showSettings = false;
+
+
+    function showSettingsIfTrue() {
+        if (showSettings) {
+            $("#settings-unauthorized").hide();
+            $("#settings-authorized").show();
+        } else {
+            $("#settings-authorized").hide();
+            $("#settings-unauthorized").show();
+        }
+    }
+
+
+    function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+    }
+
+
+    function addAndSaveDevices(code) {
+        $("#" + code).show();
+        $("#noWashifys").hide();
+        devices.push(code);
+        if (typeof(Storage) !== "undefined") {
+            localStorage.setItem("devices", devices.join("|"));
+        } else {
+            console.log("No Local Storage");
+        }
+
+    }
+
+    function loadDevices() {
+        let localDevices = localStorage.getItem("devices");
+        if (localDevices) {
+            devices = localDevices.split('|');
+        }
+        devices.map(function (device) {
+            $("#" + device).show();
+            $("#noWashifys").hide();
+        });
+
+        let settings = localStorage.getItem("settings");
+        if (settings === "1") {
+            showSettings = true;
+        }
+    }
+
+    function loadDevicesFromUrl() {
+        let urlParameter = getUrlParameter('devices');
+        let urlDevices = urlParameter.split('$');
+        urlDevices.map(function (urlDevice) {
+            let numberPin = urlDevice.split('|');
+            addAndSaveDevices(numberPin[0]);
+            if (numberPin[0] === "ab123" && numberPin[1] === "pwd") {
+                showSettings = true;
+                localStorage.setItem("settings", "1");
+            }
+        });
+        console.log(devices);
+    }
+
+    function deleteDevices(device) {
+        devices = devices.filter(function (value, index, arr) {
+            return value != device;
+        });
+
+        if (typeof(Storage) !== "undefined") {
+            localStorage.setItem("devices", devices.join("|"));
+            if (device === "ab123") {
+                localStorage.setItem("settings", "0");
+            }
+        } else {
+            console.log("No Local Storage");
+        }
+    }
+
+    function loadData() {
+        var jqxhr = $.ajax("https://api.particle.io/v1/devices/todo: your own device ID/rpm?access_token=todo: your own device token")
+            .done(function (data) {
+                var speed = 0;
+                if (data.result == 0) {
+
+                }
+                else {
+
+                    speed = 1 / (data.result / 60);
+                }
+                $("body").get(0).style.setProperty("--speed", speed + "s");
+            });
+
+
+        var jqxhr2 = $.ajax("https://api.particle.io/v1/devices/todo: your own device ID/finished?access_token=todo: your own device token")
+            .done(function (data) {
+                $(".settings-button").show();
+                if (calibrate == 0) {
+                    if (data.result == 0) {
+                        $("#ab123 .heading").hide();
+                        $("#running").show();
+                        $(".shark").hide();
+                        $("body").get(0).style.setProperty("--colorbutton", "#fd8185");
+                    }
+                    else {
+                        $("#ab123 .heading").hide();
+                        $(".shark").show();
+                        $("#finished").show();
+                        $("body").get(0).style.setProperty("--colorbutton", "#02ff00");
+                    }
+                }
+                else {
+                    $("#ab123 .heading").hide();
+                    $("#calibrate").show();
+                }
+
+            }).fail(function () {
+                $("#ab123 .heading").hide();
+                $("#no-connection").show();
+                $(".shark").hide();
+                $(".settings-button").hide();
+                $("body").get(0).style.setProperty("--colorbutton", "#fd0005");
+                $("body").get(0).style.setProperty("--speed", "0s");
+            });
+
+
+        var jqxhr3 = $.ajax("https://api.particle.io/v1/devices/todo: your own device ID/calibratevar?access_token=todo: your own device token")
+            .done(function (data) {
+                calibrate = data.result;
+            });
+
+    }
+
+
+    window.setInterval(function () {
+        console.log(calibrate);
+        loadData();
+
+
+    }, 5000);
+
+
+    window.setInterval(function () {
+        if (deviceName === "") {
+            var jqxhr = $.ajax("https://api.particle.io/v1/devices/todo: your own device ID/devicename?access_token=todo: your own device token")
+                .done(function (data) {
+                    deviceName = data.result;
+                    $("#ab123 .name").text(deviceName);
+                    $("#device-name").val(deviceName);
+                    $("#settings-authorized .mdl-textfield").addClass("is-dirty");
+
+                });
+        }
+    }, 20000);
+
+
+    $(document).ready(function () {
+        loadData();
+
+        $("#noWashifys").click(function () {
+            $("#to-add").click();
+        });
+
+        var jqxhr = $.ajax("https://api.particle.io/v1/devices/todo: your own device ID/devicename?access_token=todo: your own device token")
+            .done(function (data) {
+                deviceName = data.result;
+                $("#ab123 .name").text(deviceName);
+                $("#device-name").val(deviceName);
+                $("#settings-authorized .mdl-textfield").addClass("is-dirty");
+
+            });
+
+        $("#to-add").click(function () {
+            $(".page").hide();
+            $("#page_add_machine").show();
+            $(".mdl-layout-title").text("Washify hinzufügen");
+            $(".is-visible").removeClass("is-visible");
+        });
+
+        $("#to-home").click(function () {
+            $(".page").hide();
+            $("#page_machine").show();
+            $(".mdl-layout-title").text("Deine Washifies");
+            $(".is-visible").removeClass("is-visible");
+        });
+
+
+        $(".fake-settings-button").click(function () {
+            $(".wirklich-loeschen").hide();
+            $(".loeschen").show();
+            inDeviceSettings = $(this).closest(".demo-machine").attr('id');
+            $(".page").hide();
+            $("#page_settings_unauthorized").show();
+            $(".mdl-layout-title").text("Einstellungen");
+            $("#page_settings_unauthorized .mdl-textfield__error").css("visibility", "hidden");
+        });
+
+        $(".settings-button").click(function () {
+            $(".wirklich-loeschen").hide();
+            $(".loeschen").show();
+            inDeviceSettings = $(this).closest(".demo-machine").attr('id');
+            $(".page").hide();
+            showSettingsIfTrue();
+            $("#page_settings").show();
+            $("#device_name").val(deviceName);
+            $(".mdl-layout-title").text("Einstellungen");
+            $("#page_settings_unauthorized .mdl-textfield__error").css("visibility", "hidden");
+        });
+
+
+        $(".codepin").on("keyup", function (event) {
+            if (event.which == 13)
+                $(this).parents(".page").find("button").click();
+            console.log("Enter");
+        });
+
+        $("#fake-pin-button").click(function () {
+            $("#page_settings_unauthorized .mdl-textfield__error").css("visibility", "visible");
+        });
+
+        $("#pin-button").click(function () {
+            let pin = $("#pin").val();
+            if (pin !== "pwd") {
+                $("#page_settings_unauthorized .mdl-textfield__error").css("visibility", "visible");
+            } else {
+                showSettings = true;
+                localStorage.setItem("settings", "1");
+                showSettingsIfTrue();
+            }
+        });
+
+        $("#add-machine-button").click(function () {
+            let code = $("#code-input").val();
+            let element = $("#" + code);
+            console.log(element);
+            if (element.length) {
+                $(".page").hide();
+                if (code != "ab123") {
+                    $("#page_machine").show();
+                }
+                else {
+                    $(".wirklich-loeschen").hide();
+                    $(".loeschen").show();
+                    $("#page_settings").show();
+                    showSettingsIfTrue();
+                }
+                $("#page_add_machine .mdl-textfield__error").css("visibility", "hidden");
+                addAndSaveDevices(code);
+            }
+            else {
+                $("#page_add_machine .mdl-textfield__error").css("visibility", "visible");
+            }
+
+        });
+
+
+        // Settings
+
+        // Settings
+        $("#device-name").on("keyup", function () {
+            $("#name-speichern").show();
+        });
+
+        $("#name-speichern").click(function () {
+            let name = $("#device-name").val();
+            console.log(name);
+            $(this).hide();
+            $("#ab123 .name").text(name);
+            var jqxhr = $.post("https://api.particle.io/v1/devices/todo: your own device ID/setname",
+                {
+                    access_token: "todo: your own device token",
+                    args: name
+                }
+            )
+                .done(function (data) {
+
+                });
+        });
+
+        $("#led").change(function () {
+            let checked = $(this).is(':checked');
+            let checkedString = "on";
+            if (checked === false) {
+                checkedString = "off"
+            }
+            var jqxhr = $.post("https://api.particle.io/v1/devices/todo: your own device ID/setled",
+                {
+                    access_token: "todo: your own device token",
+                    args: checkedString
+                }
+            )
+                .done(function (data) {
+
+                });
+        });
+
+
+        $(".loeschen").click(function () {
+            $(this).hide();
+            $(".wirklich-loeschen").show();
+        });
+
+        $(".wirklich-loeschen").click(function () {
+            if (inDeviceSettings === "ab123") {
+                showSettings = false;
+            }
+            $("#" + inDeviceSettings).hide();
+            $("#to-home").click();
+            deleteDevices(inDeviceSettings);
+        });
+
+
+        //Tutorial
+
+        $("#kalibrieren").click(function () {
+            $(".page").hide();
+            $("#page_one").show();
+        });
+
+        var $button = document.querySelector('#to-page-two');
+        $button.addEventListener('click', function () {
+            $(".page").hide();
+            $("#page_two").show();
+            var jqxhr = $.post("https://api.particle.io/v1/devices/todo: your own device ID/calibrate ",
+                {
+                    access_token: "todo: your own device token"
+                }
+            )
+                .done(function (data) {
+                    setTimeout(function () {
+                        $(".page").hide();
+                        $("#page_three").show();
+                    }, 22000)
+                });
+        });
+
+        $("#to-home2").click(function () {
+            $(".page").hide();
+            $("#page_machine").show();
+            $(".mdl-layout-title").text("Deine Washifies");
+        });
+
+        //load saved devices
+        loadDevices();
+        loadDevicesFromUrl()
+
+
+    });
+
+
+</script>
+
+</html>
